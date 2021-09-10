@@ -1,67 +1,108 @@
-import React from "react";
+import React, { useState } from "react";
+import HttpServices from "../HttpServices";
 
 const Main = () => {
+  // set the section
+  const [duration, setDuration] = useState("Give Once");
+  const [amount, setAmount] = useState(0);
+  const [isMembership, setMembership] = useState("");
+  const [fn, setFn] = useState("");
+  const [ln, setLn] = useState("");
+  const [email, setEmail] = useState("");
+  const [zip, setZip] = useState(0);
+  const [btn, setBtn] = useState(false);
+
+  const selectDuration = (duration) => setDuration(duration);
+  const enterAmt = (amount) => setAmount(amount);
+  const setMem = (type) => setMembership(type);
+
+  const payWithPaystack = async () => {
+    setBtn(true);
+    const parameters = { duration, amount, isMembership, fn, ln, email, zip };
+    console.log(parameters);
+    setBtn(false);
+    return;
+    let payment = new HttpServices("/makepayment");
+    let save = await payment.post(parameters);
+  }
+
   return (
-    //   sk_test_ee1c6c61e1b3b60fec9f3f5c3b321c6e49fdfee7
-    //  pk_test_927f880b6b2f40428705e18e11c06fd5eccd30e9
     <main id="body-content">
-      <section class="wide-tb-100">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-8 col-md-12">
-              <h1 class="heading-main">
+      <section classsName="wide-tb-100">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-8 col-md-12">
+              <h1 className="heading-main">
                 <small>Donation</small>I Am More.
               </h1>
-              <div class="type_container">
-                <div class="d_type checked">Give Once</div>
-                <div class="d_type">Monthly</div>
+              {/* d_type */}
+              <div className="type_container">
+                <div className="d_type checked" onClick={() => selectDuration("Give Once")}>Give Once</div>
+                <div className="d_type" onClick={() => selectDuration("Monthly")}>Monthly</div>
               </div>
-              <div class="donation-wrap">
-                <h3 class="h3-sm fw-5 txt-blue mb-3 text-center">
-                  Select Your Donation Amount
-                </h3>
-                <div class="row justify-content-center">
-                  <div class="col-md-12 ">
-                    <div class="form-group">
-                      <div class="row mb-2">
-                        <div class="col-md-4">
-                          <div class="d_options">N10,000</div>
+              <div className="donation-wrap">
+
+                <span className="donation_selection">
+                  <h3 className="h3-sm fw-5 txt-blue mb-3 text-center">
+                    Select Your Donation Amount
+                  </h3>
+                  <div className="row justify-content-center">
+                    <div className="col-md-12 ">
+                      <div className="form-group">
+                        <div className="row mb-2">
+                          <div className="col-md-4">
+                            <div className="d_options"
+                              onClick={() => enterAmt(10000)}
+                              style={{ backgroundColor: amount === 10000 && "#000", color: amount === 10000 && "#fff" }}
+                            >
+                              N10,000
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="d_options" onClick={() => enterAmt(20000)}
+                              style={{ backgroundColor: amount === 20000 && "#000", color: amount === 20000 && "#fff" }}>N20,000</div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="d_options" onClick={() => enterAmt(50000)}
+                              style={{ backgroundColor: amount === 50000 && "#000", color: amount === 50000 && "#fff" }}
+                            >N50,000</div>
+                          </div>
                         </div>
-                        <div class="col-md-4">
-                          <div class="d_options">N20,000</div>
+                        <div className="row">
+                          <div className="col-md-4">
+                            <div className="d_options" onClick={() => enterAmt(100000)}
+                              style={{ backgroundColor: amount === 100000 && "#000", color: amount === 100000 && "#fff" }}>N100,000</div>
+                          </div>
+                          <div className="col-md-8">
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="custom"
+                              placeholder="Custom Amount"
+                              value={amount}
+                              onChange={({ target: { value } }) => setAmount(value)}
+                            />
+                          </div>
                         </div>
-                        <div class="col-md-4">
-                          <div class="d_options">N50,000</div>
+                        <div className="col-md-12 mt-3">
+                          <button className="btn btn-default" id="initial">
+                            <i data-feather="heart"></i>
+                            Donate Now
+                          </button>
                         </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-4">
-                          <div class="d_options">N100,000</div>
-                        </div>
-                        <div class="col-md-8">
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="custom"
-                            placeholder="Custom Amount"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-md-12 mt-3">
-                        <button class="btn btn-default" id="initial">
-                          <i data-feather="heart"></i>
-                          Donate Now
-                        </button>
                       </div>
                     </div>
                   </div>
-                  <div class="">
+                </span>
+
+                <div className="row justify-content-center">
+                  <div className="how_to_donate">
                     <h3>How Would You Like To Donate?</h3>
-                    <div class="row">
-                      <div class="col-6">
-                        <div class="donate_type">
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="donate_type">
                           <h6>
-                            <input type="radio" name="" id="" /> Become a Spring
+                            <input type="radio" name="donation_type" onClick={() => setMem("spring member")} /> Become a Spring
                             Member
                           </h6>
                           <p>
@@ -71,157 +112,171 @@ const Main = () => {
                           </p>
                         </div>
                       </div>
-                      <div class="col-6">
-                        <div class="donate_type">
+                      <div className="col-6">
+                        <div className="donate_type">
                           <h6>
-                            <input type="radio" name="" id="" /> Make A One-Time
-                            Gift of N50,000
+                            <input
+                              type="radio" name="donation_type"
+                              onClick={() => setMem("one time")} /> Make A One-Time
+                            Gift of N{amount}
                           </h6>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-12 mt-3">
-                      <button class="btn btn-default" id="second_btn">
-                        {" "}
+                    <div className="col-md-12 mt-3">
+                      <button className="btn btn-default" id="second_btn">
                         Next
                       </button>
                     </div>
                   </div>
-                  <div class="">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
+                </div>
+
+                <div className="row justify-content-center">
+                  <div className="user_info_payment_field">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="form-group">
                           <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             id="name"
                             placeholder="First Name"
+                            value={fn}
+                            onChange={({ target: { value } }) => setFn(value)}
                           />
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div className="col-md-6">
+                        <div className="form-group">
                           <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             id="last_name"
                             placeholder="Last Name"
+                            value={ln}
+                            onChange={({ target: { value } }) => setLn(value)}
                           />
                         </div>
                       </div>
 
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div className="col-md-6">
+                        <div className="form-group">
                           <input
                             type="email"
-                            class="form-control"
+                            className="form-control"
                             id="email"
                             placeholder="Your Email"
+                            value={email}
+                            onChange={({ target: { value } }) => setEmail(value)}
                           />
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
+                      <div className="col-md-6">
+                        <div className="form-group">
                           <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             id="zip"
                             placeholder="Zip Code"
+                            value={zip}
+                            onChange={({ target: { value } }) => setZip(value)}
                           />
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-12 mt-3">
-                      <button class="btn btn-default mb-1" id="third_btn">
-                        {" "}
+                    <div className="col-md-12 mt-3">
+                      <button className="btn btn-default mb-1" id="third_btn">
                         Pay With Card
-                      </button>
-                      <button class="btn btn-primary mb-1" id="third_btn">
-                        {" "}
+                      </button>{" "}
+                      <button className="btn btn-primary mb-1" id="third_btn" onClick={payWithPaystack} disabled={btn}>
                         Donate With Paystack
                       </button>
-                      <button class="btn btn-secondary mb-1" id="third_btn">
-                        {" "}
+                      {" "}
+                      <button className="btn btn-secondary mb-1" id="third_btn">
                         Donate Through Bank Transfer
                       </button>
-                      <button class="btn btn-warning mb-1" id="third_btn">
-                        {" "}
+                      {" "}
+                      <button className="btn btn-warning mb-1" id="third_btn">
                         Donate Through GoFund Me
                       </button>
-                      <button class="btn btn-danger mb-1" id="third_btn">
-                        {" "}
-                        Donate With QuickTeller
+                      {" "}
+                      <button className="btn btn-danger mb-1" id="third_btn">
+                        Donate With E-Transact
                       </button>
                     </div>
                   </div>
+
                 </div>
-                <div class="payment_details_option">
-                  <h3 class="h3-sm fw-5 txt-blue mb-3 mt-3">Payment Details</h3>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
+
+
+
+                <div className="payment_details_option">
+                  <h3 className="h3-sm fw-5 txt-blue mb-3 mt-3">Payment Details</h3>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="form-group">
                         <input
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           id="card"
                           placeholder="Enter your card number"
                         />
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
+                    <div className="col-md-6">
+                      <div className="form-group">
                         <input
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           id="card_name"
                           placeholder="Name on your card"
                         />
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <div class="pos-rel">
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <div className="pos-rel">
                           <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             placeholder="Expiry Date"
                           />
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
+                    <div className="col-md-6">
+                      <div className="form-group">
                         <input
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           id="security"
                           placeholder="Security Code"
                         />
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <div class="pos-rel">
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <div className="pos-rel">
                           <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             placeholder="Email Address"
                           />
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
+                    <div className="col-md-6">
+                      <div className="form-group">
                         <input
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           id="security"
                           placeholder="Phone No."
                         />
                       </div>
                     </div>
-                    <div class="col-md-12 mt-3">
-                      <button class="btn btn-default">
+                    <div className="col-md-12 mt-3">
+                      <button className="btn btn-default">
                         <i data-feather="heart"></i> Donate Now
                       </button>
                     </div>
@@ -252,42 +307,42 @@ const Main = () => {
 
               <p>Thanks for your support. Sign-up and #LetsDoMore</p>
             </div>
-            <div class="col-lg-4 col-md-12">
-              <div class="faqs-sidebar pos-rel">
-                <div class="bg-overlay blue opacity-80"></div>
+            <div className="col-lg-4 col-md-12">
+              <div className="faqs-sidebar pos-rel">
+                <div className="bg-overlay blue opacity-80"></div>
                 <form>
-                  <h3 class="h3-sm fw-7 txt-white mb-3">Have any Question?</h3>
-                  <div class="form-group">
+                  <h3 className="h3-sm fw-7 txt-white mb-3">Have any Question?</h3>
+                  <div className="form-group">
                     <label for="fullname">
                       <strong>Full Name</strong>
                     </label>
                     <input
                       type="text"
-                      class="form-control form-light"
+                      className="form-control form-light"
                       id="fullname"
                     />
                   </div>
-                  <div class="form-group">
+                  <div className="form-group">
                     <label for="emailform">
                       <strong>Email Address</strong>
                     </label>
                     <input
                       type="email"
-                      class="form-control form-light"
+                      className="form-control form-light"
                       id="emailform"
                     />
                   </div>
-                  <div class="form-group">
+                  <div className="form-group">
                     <label for="questionmsg">
                       <strong>How can help you?</strong>
                     </label>
                     <textarea
-                      class="form-control form-light"
+                      className="form-control form-light"
                       rows="5"
                       id="questionmsg"
                     ></textarea>
                   </div>
-                  <button type="submit" class="btn btn-default mt-3">
+                  <button type="submit" className="btn btn-default mt-3">
                     Ask It Now
                   </button>
                 </form>
@@ -296,19 +351,19 @@ const Main = () => {
           </div>
         </div>
       </section>
-      <section class="wide-tb-150 bg-scroll bg-img-6 pos-rel callout-style-1">
-        <div class="bg-overlay blue opacity-80"></div>
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-7">
-              <h1 class="heading-main light-mode">
+      <section className="wide-tb-150 bg-scroll bg-img-6 pos-rel callout-style-1">
+        <div className="bg-overlay blue opacity-80"></div>
+        <div className="container">
+          <div className="row align-items-center">
+            <div className="col-lg-7">
+              <h1 className="heading-main light-mode">
                 <small>Help Other People</small>
                 Our Dream is To Create A Bright Future For The Underprivileged
                 Children
               </h1>
             </div>
-            <div class="col-sm-12 text-md-right">
-              <a href="index.html" class="btn btn-default">
+            <div className="col-sm-12 text-md-right">
+              <a href="index.html" className="btn btn-default">
                 Donate Now
               </a>
             </div>
