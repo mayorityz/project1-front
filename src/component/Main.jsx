@@ -16,15 +16,30 @@ const Main = () => {
   const enterAmt = (amount) => setAmount(amount);
   const setMem = (type) => setMembership(type);
 
+  const [msg, setMsg] = useState("");
+
   const payWithPaystack = async () => {
     setBtn(true);
-    const parameters = { duration, amount, isMembership, fn, ln, email, zip };
-    console.log(parameters);
-    setBtn(false);
-    return;
-    let payment = new HttpServices("/makepayment");
+    setMsg("Processing Payment! Please Wait!!");
+    const parameters = {
+      duration,
+      amount,
+      isMembership,
+      firstname: fn,
+      lastname: ln,
+      email,
+      zip,
+    };
+    let payment = new HttpServices("/paystack/init");
     let save = await payment.post(parameters);
-  }
+    if (save.status) {
+      window.location = save.data.authorization_url;
+    } else {
+      alert("An Error Occured, please try again!!!");
+      setBtn(false);
+      setMsg("");
+    }
+  };
 
   return (
     <main id="body-content">
@@ -37,11 +52,20 @@ const Main = () => {
               </h1>
               {/* d_type */}
               <div className="type_container">
-                <div className="d_type checked" onClick={() => selectDuration("Give Once")}>Give Once</div>
-                <div className="d_type" onClick={() => selectDuration("Monthly")}>Monthly</div>
+                <div
+                  className="d_type checked"
+                  onClick={() => selectDuration("Give Once")}
+                >
+                  Give Once
+                </div>
+                <div
+                  className="d_type"
+                  onClick={() => selectDuration("Monthly")}
+                >
+                  Monthly
+                </div>
               </div>
               <div className="donation-wrap">
-
                 <span className="donation_selection">
                   <h3 className="h3-sm fw-5 txt-blue mb-3 text-center">
                     Select Your Donation Amount
@@ -51,27 +75,54 @@ const Main = () => {
                       <div className="form-group">
                         <div className="row mb-2">
                           <div className="col-md-4">
-                            <div className="d_options"
+                            <div
+                              className="d_options"
                               onClick={() => enterAmt(10000)}
-                              style={{ backgroundColor: amount === 10000 && "#000", color: amount === 10000 && "#fff" }}
+                              style={{
+                                backgroundColor: amount === 10000 && "#000",
+                                color: amount === 10000 && "#fff",
+                              }}
                             >
                               N10,000
                             </div>
                           </div>
                           <div className="col-md-4">
-                            <div className="d_options" onClick={() => enterAmt(20000)}
-                              style={{ backgroundColor: amount === 20000 && "#000", color: amount === 20000 && "#fff" }}>N20,000</div>
+                            <div
+                              className="d_options"
+                              onClick={() => enterAmt(20000)}
+                              style={{
+                                backgroundColor: amount === 20000 && "#000",
+                                color: amount === 20000 && "#fff",
+                              }}
+                            >
+                              N20,000
+                            </div>
                           </div>
                           <div className="col-md-4">
-                            <div className="d_options" onClick={() => enterAmt(50000)}
-                              style={{ backgroundColor: amount === 50000 && "#000", color: amount === 50000 && "#fff" }}
-                            >N50,000</div>
+                            <div
+                              className="d_options"
+                              onClick={() => enterAmt(50000)}
+                              style={{
+                                backgroundColor: amount === 50000 && "#000",
+                                color: amount === 50000 && "#fff",
+                              }}
+                            >
+                              N50,000
+                            </div>
                           </div>
                         </div>
                         <div className="row">
                           <div className="col-md-4">
-                            <div className="d_options" onClick={() => enterAmt(100000)}
-                              style={{ backgroundColor: amount === 100000 && "#000", color: amount === 100000 && "#fff" }}>N100,000</div>
+                            <div
+                              className="d_options"
+                              onClick={() => enterAmt(100000)}
+                              style={{
+                                backgroundColor: amount === 100000 && "#000",
+                                color: amount === 100000 && "#fff",
+                              }}
+                            >
+                              N100,000
+                            </div>
                           </div>
                           <div className="col-md-8">
                             <input
@@ -80,7 +131,9 @@ const Main = () => {
                               id="custom"
                               placeholder="Custom Amount"
                               value={amount}
-                              onChange={({ target: { value } }) => setAmount(value)}
+                              onChange={({ target: { value } }) =>
+                                setAmount(value)
+                              }
                             />
                           </div>
                         </div>
@@ -102,8 +155,12 @@ const Main = () => {
                       <div className="col-6">
                         <div className="donate_type">
                           <h6>
-                            <input type="radio" name="donation_type" onClick={() => setMem("spring member")} /> Become a Spring
-                            Member
+                            <input
+                              type="radio"
+                              name="donation_type"
+                              onClick={() => setMem("spring member")}
+                            />{" "}
+                            Become a Spring Member
                           </h6>
                           <p>
                             Your gift today will pre-pay, a year long membership
@@ -116,9 +173,11 @@ const Main = () => {
                         <div className="donate_type">
                           <h6>
                             <input
-                              type="radio" name="donation_type"
-                              onClick={() => setMem("one time")} /> Make A One-Time
-                            Gift of N{amount}
+                              type="radio"
+                              name="donation_type"
+                              onClick={() => setMem("one time")}
+                            />{" "}
+                            Make A One-Time Gift of N{amount}
                           </h6>
                         </div>
                       </div>
@@ -167,7 +226,9 @@ const Main = () => {
                             id="email"
                             placeholder="Your Email"
                             value={email}
-                            onChange={({ target: { value } }) => setEmail(value)}
+                            onChange={({ target: { value } }) =>
+                              setEmail(value)
+                            }
                           />
                         </div>
                       </div>
@@ -184,34 +245,40 @@ const Main = () => {
                         </div>
                       </div>
                     </div>
+                    {msg && (
+                      <div className="alert alert-warning text-center mt-3">
+                        {msg}
+                      </div>
+                    )}
                     <div className="col-md-12 mt-3">
                       <button className="btn btn-default mb-1" id="third_btn">
                         Pay With Card
                       </button>{" "}
-                      <button className="btn btn-primary mb-1" id="third_btn" onClick={payWithPaystack} disabled={btn}>
+                      <button
+                        className="btn btn-primary mb-1"
+                        id="third_btn"
+                        onClick={payWithPaystack}
+                        disabled={btn}
+                      >
                         Donate With Paystack
-                      </button>
-                      {" "}
+                      </button>{" "}
                       <button className="btn btn-secondary mb-1" id="third_btn">
                         Donate Through Bank Transfer
-                      </button>
-                      {" "}
+                      </button>{" "}
                       <button className="btn btn-warning mb-1" id="third_btn">
                         Donate Through GoFund Me
-                      </button>
-                      {" "}
+                      </button>{" "}
                       <button className="btn btn-danger mb-1" id="third_btn">
                         Donate With E-Transact
                       </button>
                     </div>
                   </div>
-
                 </div>
 
-
-
                 <div className="payment_details_option">
-                  <h3 className="h3-sm fw-5 txt-blue mb-3 mt-3">Payment Details</h3>
+                  <h3 className="h3-sm fw-5 txt-blue mb-3 mt-3">
+                    Payment Details
+                  </h3>
                   <div className="row">
                     <div className="col-md-6">
                       <div className="form-group">
@@ -311,7 +378,9 @@ const Main = () => {
               <div className="faqs-sidebar pos-rel">
                 <div className="bg-overlay blue opacity-80"></div>
                 <form>
-                  <h3 className="h3-sm fw-7 txt-white mb-3">Have any Question?</h3>
+                  <h3 className="h3-sm fw-7 txt-white mb-3">
+                    Have any Question?
+                  </h3>
                   <div className="form-group">
                     <label for="fullname">
                       <strong>Full Name</strong>
