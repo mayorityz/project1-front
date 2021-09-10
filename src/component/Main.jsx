@@ -18,7 +18,7 @@ const Main = () => {
 
   const payWithPaystack = async () => {
     setBtn(true);
-    const parameters = { duration, amount, isMembership, fn, ln, email, zip };
+    const parameters = { duration, amount, isMembership, firstName: fn, lastName: ln, email, zip };
     console.log(parameters);
     setBtn(false);
     return;
