@@ -7618,6 +7618,12 @@ label.error {
     color: #fff;
 }
 
+@media screen and (max-width: 400px){
+    .donate_type{
+        padding: 1px;
+    }
+}
+
 .donate_type p {
     padding: 10px;
     line-height: 17px;
