@@ -9,6 +9,9 @@ function App() {
         <Route path="/dashboard" exact>
           <Dashboard />
         </Route>
+        <Route path="/:status">
+          <Landing />
+        </Route>
         <Route path="/">
           <Landing />
         </Route>

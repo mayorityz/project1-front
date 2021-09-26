@@ -25,12 +25,11 @@ let fourthForm = document.querySelector(".payment_details_option");
 
 initialBtn[0].addEventListener("click", () => {
   initialForm.style.display = "none";
-  secondForm.style.display = "block";
+  thirdForm.style.display = "block";
 });
 
 secondBtn[0].addEventListener("click", () => {
   secondForm.style.display = "none";
-  console.log(thirdForm);
   thirdForm.style.display = "block";
 });
 
